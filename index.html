@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ボーダー計算機">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADqklEQVR42u3dQUEEMRBFwZz3gg20oBI5SMEFeIBJ0t2/Dk8As7+S2QOwXq+3Hym15SEIAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAmApL4+37fnOQMQM3YoADB4IAAwehgAMHoYADB8EAAwfBAAMHwQADB8EAAwfBAAMHwQAKg2/u+vj38HAQDlh//E0KvDAMD4rw6+AggAgodfcfS3MAAQNP5Owz8JAYDB4+88+pMYADB8EBpDWMafM/zdEABoOP7E4e+EAIDxQwBA7fEb/H4IABg/BADUGb9h34EAgPFDAIDxQwDA0fEbbj0IABwCYKw1EQBg/BAAYPwQAGD8EADwFABj7IcAAOOHAADjhwAAAADIBWD8EMQCMH4IbiNoB8DIZiKIA+D0B6ACguX0V/ItsIxfyQgAEADGr1QE5QEYUR6CsQCc/gBUQ7Cc/kq+BZbTX8m3wHL6K/kWWE5/Jd8Cy+mv5FsAAAHg9Uepr0HL6a/kWwAAAWD8SkUAgAAAQABcBmAUEIwC4PRXh1sAAAEAgADw/q/A7wEACACvP0p9DQJAAAAgAAAQAL4AK+uLMAACAAABAIAAAEAAACAAABAAAAgAAAQAAAIAAAEAgAAAQAAAIAAAEAAACAAABIDfCJPfCANAAAAgAABQIABfhOVPIwIgACCQvw4NgAAAQFEAfA9Q9fd//yVS0ac/AAIAAAEAgQLHD4AAqAYAAuMfBcAtoKqnPwACoCIACIx/FAC3gCqe/qUBQOD0HwXALQBAtfGXBwCB038UALcAAJXG3wIABE7/UQAgMP4q4wdAANwAAIHxVxh/OwAQzB1/HAC3AAC3x98SAARO/zEAIDD+m+MvAQAC4wcAAACSAUBg/PEAIDB+AP74MCHoNX4AIDB+ACAwfgAgMH4AngYAQb3xA3ABAQg1hl91/OUBQGD88QAgMP54AE8hAOHc8DuMvxUACIw/HsCTCEDYM/xO428JAALjjwfwNIJUCE8/w447agtgB4IUCDueW9cNtQYAguEDsBHBBAw7n8uE3YwBsBtBNwi7n8WUzYwCcApCVQwnfu5pWxkJ4BSC2yBO/4wTdzIWwC0IO2Dc/hkm72M8gAoIOjd9GxEAQDB8AEAwfABAMHwAQDB8ANIh+LwBiITg8wUgDoPPEYA4DD4vAKJA+DwAiEHhOQMgASABIAEgASABIAEgASABIAEgASABIAEgASABIAA8BAEgASABIAEgpfQLA6pUi6zYGFYAAAAASUVORK5CYII=">
+<script>
+// Inline manifest (no separate file needed)
+const manifestData = {
+  "name": "パチンコ ボーダー計算機",
+  "short_name": "ボーダー計算機",
+  "description": "パチンコのボーダーラインをAIでリアルタイム検索・計算",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait",
+  "lang": "ja",
+  "icons": [
+    {"src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADqklEQVR42u3dQUEEMRBFwZz3gg20oBI5SMEFeIBJ0t2/Dk8As7+S2QOwXq+3Hym15SEIAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAmApL4+37fnOQMQM3YoADB4IAAwehgAMHoYADB8EAAwfBAAMHwQADB8EAAwfBAAMHwQAKg2/u+vj38HAQDlh//E0KvDAMD4rw6+AggAgodfcfS3MAAQNP5Owz8JAYDB4+88+pMYADB8EBpDWMafM/zdEABoOP7E4e+EAIDxQwBA7fEb/H4IABg/BADUGb9h34EAgPFDAIDxQwDA0fEbbj0IABwCYKw1EQBg/BAAYPwQAGD8EADwFABj7IcAAOOHAADjhwAAAADIBWD8EMQCMH4IbiNoB8DIZiKIA+D0B6ACguX0V/ItsIxfyQgAEADGr1QE5QEYUR6CsQCc/gBUQ7Cc/kq+BZbTX8m3wHL6K/kWWE5/Jd8Cy+mv5FsAAAHg9Uepr0HL6a/kWwAAAWD8SkUAgAAAQABcBmAUEIwC4PRXh1sAAAEAgADw/q/A7wEACACvP0p9DQJAAAAgAAAQAL4AK+uLMAACAAABAIAAAEAAACAAABAAAAgAAAQAAAIAAAEAgAAAQAAAIAAAEAAACAAABIDfCJPfCANAAAAgAABQIABfhOVPIwIgACCQvw4NgAAAQFEAfA9Q9fd//yVS0ac/AAIAAAEAgQLHD4AAqAYAAuMfBcAtoKqnPwACoCIACIx/FAC3gCqe/qUBQOD0HwXALQBAtfGXBwCB038UALcAAJXG3wIABE7/UQAgMP4q4wdAANwAAIHxVxh/OwAQzB1/HAC3AAC3x98SAARO/zEAIDD+m+MvAQAC4wcAAACSAUBg/PEAIDB+AP74MCHoNX4AIDB+ACAwfgAgMH4AngYAQb3xA3ABAQg1hl91/OUBQGD88QAgMP54AE8hAOHc8DuMvxUACIw/HsCTCEDYM/xO428JAALjjwfwNIJUCE8/w447agtgB4IUCDueW9cNtQYAguEDsBHBBAw7n8uE3YwBsBtBNwi7n8WUzYwCcApCVQwnfu5pWxkJ4BSC2yBO/4wTdzIWwC0IO2Dc/hkm72M8gAoIOjd9GxEAQDB8AEAwfABAMHwAQDB8ANIh+LwBiITg8wUgDoPPEYA4DD4vAKJA+DwAiEHhOQMgASABIAEgASABIAEgASABIAEgASABIAEgASABIAA8BAEgASABIAEgpfQLA6pUi6zYGFYAAAAASUVORK5CYII=", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "data:image/png;base64,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EAACQAAACAABIAAEAIAAEAACQAAACAABIAAEAIAAEAACQAAACAABIAAEAIAAEAACQAAACAABIAAEAIAAEAACQAAACAABIAAAEAACQAAAIAAEgAAAQAAIAAEAgAAQAAIAAAEgAAQAAAJAAEwOABEAkDn+AkAACAAAASAABIAAABAAAkAACAAAASAABAAAAkAACAAABIAAEAAACAABIAAAEAACQAAAIAAEgF8DBMCvAAoAtwAAxl8ACAABACAABIAAEAAAAkAACAABACAABIAAEAAAAkAACAABACAABIAAEAAAAkAAiAARAGD8QzdSAAgAAAEgAASAAAAQAAJAAAgAAAEgAASAAAAQAAJAAAgAAAEgAESACAAw/gJAAPjHBRAAAkAAACAABIAAAEAACIDMABABAHvHXwAIAAEAIAAEgAgQAACu/wWAABAAAAJAAAgAEQDg+l8ACAABACAABIDXAAC4/hcAAgAAASAAvAYAwPW/ABAAAAJAAAgAAQAgAASAAPA9AAABYPwFgFsAAOMvAASAAAAQAAJAAHgNACAAjL8AEAEAxl8ACAABACAABIAAEAAAAkAAiAARAGD8BYAAEAAAAkAACAABACAABIAIEAEAxl8ACAABACAABIAAEAEAA8dfAAgAAQAgAASACBAAAK7/BYAAEAEATv8CQAAIAAABIABEgAgAMP4CQAAIAAABIABEgAAA8OU/ASAARABg/J3+BYAAEACAABAAAkAEABh/4y8ABACAABAAAiA7AEQAYPwFgABwCwAgAIy/AHALAGD8BYAAcAsAIACMvwBwCwBg/AWAABAAAAJAAAgAEQBg/O2bABAAAAJAAPgQRACA8RcACAAAASAARIAIADD+AkAACAAAASAARIAIADD+AkAAiACAUc9NOyYABACAAEAAiAAA4y8AfBACAEAACABEAIDxFwCMCwARABh/ASAA3AIACADjLwDcAgA4/SMA3AIAOP0jAEQAgPFHAHgVAODqXwDgFgDA6V8A4BYAwOlfACACAIy/AGBgAIgAoG38BYAAEAECAHD6RwC4BQBw+kcAiAAA448AEAEAxl8A+BAEAIAAEACIAADjLwBYHgAiAEgafwEgAESACACMPwJABAgAwNU/AkAAiADA6R8BIAJEAGD8EQAiwEMOMP4CwIfQFwAiANgy/gJAAIgAEQAYfwSACBABgPFHAAgAEQBEjb8AEAAiQAAATv8IABEgAgDjjwAQASIAMP4IAAEgAgDv/REAIkAEAMYfASACRAAYf+OPABABIgCMv/EXAAgAEQDGXwAIAESACADjb/wFACLAwxSMv/EXAJRGgBAAw2/8BQClASACwPgLAAGACACMv/EXAIgAwPgbfwGACACMv/EXAIgAwPgjABABgPFHAJAQAUIADL/xFwCUBoAIAOMvAAQAIgAw/ggA2iJACEDn8Bt/AYAIEAFg/BEAiADA+CMAqIsAIQC5w2/8BQAiQASA8UcAIAJEABh/BAAiQAhAzPAbfwGACBABYPwRAIgAIQDJw2/8BQAiQAhA2fAbfwGACBABYPwRAIgAIQDJw2/8BQAiQAhA2fAbfwGACBABYPwRAIgAIQDJw2/8BQBCQAiA4UcAIAKEAKQOv/EXAIgAIQBlw2/8BQAiQAhA2fAbfwGACBACUDb8xl8AIAKEAJQNv/EXAAgBIQCGHwGACBADGH3jjwBABAgBDL/xRwAgBMQARt/wIwAQAUIAw2/8EQCIADGA0Tf+CACEgBjA6Bt+BAAiQAxg9I0/AgARIAgw+MYfAYAQEAQYfMOPAEAECAKDj/FHACAEBIHBx/AjABABwsDQG38QAAgBcWDkDT8IAESAUDDsxh8EAEIADD8IAIQAGH4EAIgAMP4IABACYPgRACAEwPAjAEAIgOFHAIAQAMOPAAARAMYfAQBCAAw/AgCEAIYfBAAIAQw/CAAQAxh9EAAgBDD8IABACGD4QQCAEMDwgwAAMYDRBwGAEDBUGH4QAIgBMPogABADYPQRAD4EhAD4v0AAgBjA6IMAAEGAwQcBAGIAow8CAAQBBh8EAIgBjD4IABAFGHsQACAIMPggAEAYYOhBAACXoQcEALAzEPydQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAAJjuBx2iOstVt+m5AAAAAElFTkSuQmCC", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+};
+const blob = new Blob([JSON.stringify(manifestData)], {type:'application/json'});
+document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+
+// Register service worker inline via blob
+const swCode = `
+const CACHE = 'pachi-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+  self.skipWaiting();
+});
+self.addEventListener('fetch', e => {
+  // Network first for API calls, cache first for app shell
+  if (e.request.url.includes('api.anthropic.com') || e.request.url.includes('fonts.googleapis')) {
+    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  } else {
+    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+  }
+});
+`;
+if ('serviceWorker' in navigator) {
+  const swBlob = new Blob([swCode], {type:'text/javascript'});
+  const swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
+<title>ボーダー計算機</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --panel: #10101a;
+  --panel2: #141420;
+  --gold: #e8c84a;
+  --gold2: #c9a82a;
+  --cyan: #3af0e0;
+  --red: #ff3b5c;
+  --green: #2ef08a;
+  --dim: #3a3a55;
+  --muted: #606088;
+  --text: #dde0f0;
+  --border: #1e1e32;
+  --fav: #ff9a00;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans JP',sans-serif;
+  min-height:100vh;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,200,74,.06) 0%, transparent 70%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.012) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.012) 40px);
+}
+
+.wrap {
+  position:relative; z-index:1;
+  max-width:660px; margin:0 auto;
+  padding:2.5rem 1.2rem 5rem;
+}
+
+/* ── Header ── */
+.hdr { text-align:center; margin-bottom:2.2rem; }
+.hdr-sub {
+  font-size:.6rem; letter-spacing:.5em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:.5rem;
+  text-shadow:0 0 16px rgba(232,200,74,.5);
+}
+.hdr h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.4rem,8vw,4rem);
+  letter-spacing:.08em; color:#fff; line-height:1;
+  text-shadow:0 0 40px rgba(232,200,74,.3), 0 2px 0 rgba(0,0,0,.8);
+  margin-bottom:.5rem;
+}
+.hdr h1 span { color:var(--gold); }
+.hdr-tags { display:flex; justify-content:center; gap:.5rem; flex-wrap:wrap; }
+.tag {
+  font-size:.62rem; padding:.2rem .65rem;
+  border-radius:3px; letter-spacing:.05em;
+  border:1px solid; background:rgba(255,255,255,.03);
+}
+.tag.gold { color:var(--gold); border-color:rgba(232,200,74,.3); }
+.tag.cyan { color:var(--cyan); border-color:rgba(58,240,224,.3); }
+.tag.fav  { color:var(--fav); border-color:rgba(255,154,0,.3); }
+hr.rule {
+  border:none; height:1px; margin:1.8rem 0;
+  background:linear-gradient(90deg, transparent, var(--gold) 20%, var(--cyan) 80%, transparent);
+  opacity:.35;
+}
+
+/* ── Card ── */
+.card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-top:2px solid transparent;
+  border-radius:8px; padding:1.8rem; margin-bottom:1rem;
+  position:relative; overflow:visible;
+  background-image:linear-gradient(var(--panel), var(--panel)),
+                   linear-gradient(90deg, var(--gold2), var(--gold), var(--cyan));
+  background-origin:border-box;
+  background-clip:padding-box, border-box;
+}
+.card-label {
+  font-size:.58rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1.4rem; opacity:.8;
+}
+
+/* ── Favorites section ── */
+.fav-section { margin-bottom:1rem; }
+.fav-title {
+  font-size:.6rem; color:var(--fav); letter-spacing:.15em;
+  margin-bottom:.55rem; display:flex; align-items:center; gap:.4rem;
+  text-transform:uppercase;
+}
+.fav-list { display:flex; flex-direction:column; gap:.35rem; }
+.fav-item {
+  display:flex; align-items:center; gap:.6rem;
+  background:rgba(255,154,0,.06); border:1px solid rgba(255,154,0,.18);
+  border-radius:6px; padding:.55rem .8rem;
+  cursor:pointer; transition:background .12s;
+}
+.fav-item:hover { background:rgba(255,154,0,.13); }
+.fav-star { color:var(--fav); font-size:.95rem; flex-shrink:0; }
+.fav-name { flex:1; font-size:.85rem; line-height:1.3; }
+.fav-bdr {
+  font-family:'Bebas Neue',sans-serif; font-size:1rem;
+  color:var(--gold); letter-spacing:.05em; white-space:nowrap;
+  margin-right:.2rem;
+}
+.fav-bdr em { font-family:'Noto Sans JP'; font-style:normal; font-size:.6rem; color:var(--muted); }
+.fav-del {
+  background:none; border:none; color:var(--dim);
+  cursor:pointer; font-size:.85rem; padding:.15rem .3rem;
+  border-radius:3px; transition:color .12s, background .12s;
+  flex-shrink:0; line-height:1;
+}
+.fav-del:hover { color:var(--red); background:rgba(255,59,92,.1); }
+.fav-divider { height:1px; background:rgba(255,255,255,.06); margin:1rem 0; }
+
+/* ── Search ── */
+.search-block { position:relative; }
+.search-row { display:flex; gap:.6rem; align-items:stretch; }
+.machine-input {
+  flex:1; background:rgba(0,0,0,.5);
+  border:1px solid var(--dim); border-radius:6px;
+  color:var(--text); font-family:'Noto Sans JP',sans-serif;
+  font-size:1rem; padding:.75rem 1rem;
+  outline:none; transition:border-color .15s, box-shadow .15s;
+}
+.machine-input::placeholder { color:#282840; }
+.machine-input:focus { border-color:var(--gold); box-shadow:0 0 16px rgba(232,200,74,.1); }
+.machine-input.searching { border-color:var(--cyan); }
+.machine-input.found { border-color:var(--green); }
+.machine-input.error { border-color:var(--red); }
+.search-btn {
+  padding:.75rem 1.2rem; border-radius:6px;
+  background:rgba(232,200,74,.08); border:1px solid rgba(232,200,74,.3);
+  color:var(--gold); font-size:.75rem; font-weight:700;
+  letter-spacing:.05em; cursor:pointer; transition:all .15s; white-space:nowrap;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.search-btn:hover { background:rgba(232,200,74,.14); }
+.search-btn:disabled { opacity:.35; cursor:not-allowed; }
+.web-btn {
+  padding:.75rem 1rem; border-radius:6px;
+  background:rgba(58,240,224,.06); border:1px solid rgba(58,240,224,.25);
+  color:var(--cyan); font-size:.7rem; font-weight:700;
+  letter-spacing:.03em; cursor:pointer; transition:all .15s; white-space:nowrap;
+  font-family:'Noto Sans JP',sans-serif; flex-shrink:0;
+}
+.web-btn:hover { background:rgba(58,240,224,.13); }
+.web-btn:disabled { opacity:.35; cursor:not-allowed; }
+
+.search-hint {
+  margin-top:.5rem; min-height:1.2rem;
+  font-size:.72rem; display:flex; align-items:center; gap:.4rem;
+}
+.hint-idle    { color:var(--muted); }
+.hint-loading { color:var(--cyan); }
+.hint-found   { color:var(--green); }
+.hint-none    { color:var(--gold); }
+.hint-err     { color:var(--red); }
+
+@keyframes spin { to { transform:rotate(360deg); } }
+.sp { display:inline-block; animation:spin .7s linear infinite; margin-right:.2rem; }
+
+/* ── Dropdown ── */
+.dropdown {
+  position:absolute; top:calc(100% + .3rem); left:0; right:0;
+  background:#18182c; border:1px solid var(--gold);
+  border-radius:6px; z-index:200;
+  box-shadow:0 16px 40px rgba(0,0,0,.7);
+  animation:fadeIn .15s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+.drop-item {
+  display:flex; align-items:center;
+  padding:.65rem .9rem; gap:.6rem;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  transition:background .1s;
+}
+.drop-item:last-child { border-bottom:none; }
+.drop-item:hover { background:rgba(232,200,74,.07); }
+.drop-sel {
+  flex:1; display:flex; align-items:center; gap:.6rem;
+  cursor:pointer;
+}
+.drop-name { font-size:.85rem; flex:1; line-height:1.3; }
+.drop-border {
+  font-family:'Bebas Neue',sans-serif; font-size:1.05rem;
+  color:var(--gold); letter-spacing:.05em; white-space:nowrap;
+}
+.drop-border span { font-size:.62rem; color:var(--muted); }
+.drop-fav {
+  background:none; border:none; cursor:pointer; font-size:1rem;
+  padding:.1rem .3rem; border-radius:4px; flex-shrink:0;
+  color:var(--dim); transition:transform .15s, color .15s;
+}
+.drop-fav:hover { transform:scale(1.3); color:var(--fav); }
+.drop-fav.on { color:var(--fav); }
+
+/* cache pills */
+.cache-bar { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.6rem; }
+.cache-pill {
+  font-size:.62rem; padding:.15rem .6rem;
+  background:rgba(58,240,224,.05); border:1px solid rgba(58,240,224,.15);
+  border-radius:3px; color:var(--cyan); cursor:pointer; transition:background .1s;
+}
+.cache-pill:hover { background:rgba(58,240,224,.12); }
+
+/* ── Selected box ── */
+.sel-box {
+  display:none; align-items:center; gap:.7rem;
+  padding:.7rem 1rem; border-radius:6px; margin-bottom:1.2rem;
+  background:rgba(58,240,224,.05); border:1px solid rgba(58,240,224,.2);
+}
+.sel-box.show { display:flex; }
+.sel-info { flex:1; min-width:0; }
+.sel-lbl { font-size:.6rem; color:var(--cyan); letter-spacing:.1em; margin-bottom:.2rem; }
+.sel-nm { font-size:.9rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sel-fav-btn {
+  flex-shrink:0;
+  background:none; border:1px solid rgba(255,154,0,.3);
+  border-radius:5px; padding:.35rem .55rem;
+  cursor:pointer; font-size:.75rem; transition:all .15s;
+  color:var(--dim); white-space:nowrap; font-family:'Noto Sans JP',sans-serif;
+}
+.sel-fav-btn:hover { background:rgba(255,154,0,.1); color:var(--fav); border-color:var(--fav); }
+.sel-fav-btn.on { color:var(--fav); border-color:var(--fav); background:rgba(255,154,0,.08); }
+.sel-bdr { text-align:right; flex-shrink:0; }
+.sel-bdr-lbl { font-size:.58rem; color:var(--muted); margin-bottom:.1rem; }
+.sel-bdr-val { font-family:'Bebas Neue'; font-size:1.5rem; color:var(--gold); letter-spacing:.05em; }
+.sel-bdr-unit { font-size:.56rem; color:var(--muted); }
+
+/* ── Inputs ── */
+.input-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.2rem; }
+.field { display:flex; flex-direction:column; gap:.35rem; }
+.field.span2 { grid-column:1/-1; }
+.field-hd { display:flex; justify-content:space-between; align-items:center; }
+.field label { font-size:.68rem; color:var(--muted); letter-spacing:.06em; }
+.field label em { color:rgba(58,240,224,.6); font-style:normal; }
+.num-input {
+  background:rgba(0,0,0,.5); border:1px solid var(--dim);
+  border-radius:6px; color:var(--text);
+  font-family:'Noto Sans JP',sans-serif; font-size:1.1rem;
+  padding:.7rem .9rem; outline:none; width:100%; transition:border-color .15s;
+}
+.num-input::placeholder { color:#20203a; }
+.num-input:focus { border-color:var(--cyan); box-shadow:0 0 12px rgba(58,240,224,.08); }
+
+/* 円/玉 toggle */
+.unit-tgl { display:flex; border:1px solid var(--dim); border-radius:5px; overflow:hidden; }
+.utgl-btn {
+  padding:.18rem .55rem; font-size:.65rem; font-weight:700;
+  border:none; cursor:pointer; transition:all .12s;
+  background:transparent; color:var(--muted);
+  font-family:'Noto Sans JP',sans-serif; letter-spacing:.04em;
+}
+.utgl-btn.on { background:var(--cyan); color:#000a; }
+
+.invest-wrap { position:relative; }
+.invest-sfx {
+  position:absolute; right:.9rem; top:50%; transform:translateY(-50%);
+  font-size:.8rem; color:var(--muted); pointer-events:none;
+}
+.conv-hint { font-size:.65rem; color:var(--muted); margin-top:.25rem; min-height:.9rem; }
+.conv-hint.on { color:var(--cyan); }
+
+/* ── Calc btn ── */
+.calc-btn {
+  width:100%; margin-top:1.4rem; padding:1rem;
+  background:linear-gradient(135deg, rgba(232,200,74,.12), rgba(232,200,74,.05));
+  border:1px solid var(--gold); border-radius:6px;
+  color:var(--gold); font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem; letter-spacing:.2em;
+  cursor:pointer; transition:all .15s;
+  text-shadow:0 0 20px rgba(232,200,74,.4);
+}
+.calc-btn:hover {
+  background:linear-gradient(135deg, rgba(232,200,74,.2), rgba(232,200,74,.1));
+  box-shadow:0 0 28px rgba(232,200,74,.15);
+}
+
+/* ── Result ── */
+.result {
+  display:none; background:var(--panel); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden; animation:fadeIn .3s ease; margin-top:1rem;
+}
+.result.show { display:block; }
+.result-top { padding:1.5rem 1.8rem; border-bottom:1px solid var(--border); }
+.result-top.pos { background:rgba(46,240,138,.04); border-bottom-color:rgba(46,240,138,.12); }
+.result-top.neg { background:rgba(255,59,92,.04);  border-bottom-color:rgba(255,59,92,.12); }
+.result-top.even{ background:rgba(232,200,74,.03); border-bottom-color:rgba(232,200,74,.1); }
+.verdict-row { display:flex; align-items:flex-start; gap:1rem; }
+.verdict-icon { font-size:2rem; line-height:1; flex-shrink:0; }
+.verdict-title { font-size:1.05rem; font-weight:700; margin-bottom:.25rem; }
+.verdict-title.pos  { color:var(--green); }
+.verdict-title.neg  { color:var(--red); }
+.verdict-title.even { color:var(--gold); }
+.verdict-sub { font-size:.76rem; color:var(--muted); line-height:1.5; }
+
+.nums-row {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border); border-bottom:1px solid var(--border);
+}
+.num-cell { background:var(--panel2); padding:1rem 1.2rem; text-align:center; }
+.num-cell-lbl { font-size:.58rem; letter-spacing:.1em; color:var(--muted); margin-bottom:.3rem; }
+.num-big { font-family:'Bebas Neue',sans-serif; font-size:2.6rem; line-height:1; letter-spacing:.03em; }
+.num-big.cyan { color:var(--cyan); text-shadow:0 0 20px rgba(58,240,224,.4); }
+.num-big.gold { color:var(--gold); text-shadow:0 0 20px rgba(232,200,74,.4); }
+.num-big.pos  { color:var(--green); text-shadow:0 0 20px rgba(46,240,138,.3); }
+.num-big.neg  { color:var(--red);   text-shadow:0 0 20px rgba(255,59,92,.3); }
+.num-unit { font-size:.62rem; color:var(--muted); margin-top:.1rem; }
+
+.diff-area { padding:1.2rem 1.8rem; border-bottom:1px solid var(--border); }
+.diff-hd { display:flex; justify-content:space-between; font-size:.68rem; color:var(--muted); margin-bottom:.5rem; }
+.diff-hd strong { font-family:'Bebas Neue',sans-serif; font-size:.9rem; }
+.diff-track { height:6px; background:rgba(255,255,255,.05); border-radius:3px; position:relative; overflow:hidden; }
+.diff-mid { position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--dim); }
+.diff-fill { position:absolute; top:0; bottom:0; border-radius:3px; transition:width .8s cubic-bezier(.34,1.56,.64,1); }
+
+.detail-list { padding:1rem 1.8rem; display:flex; flex-direction:column; gap:.55rem; }
+.d-row { display:flex; justify-content:space-between; font-size:.78rem; }
+.d-key { color:var(--muted); }
+.d-val { font-weight:700; font-family:'Bebas Neue',sans-serif; font-size:.95rem; letter-spacing:.05em; }
+.note-box { margin:1rem 1.8rem 1.4rem; padding:.8rem 1rem; border-radius:5px; font-size:.74rem; line-height:1.6; }
+.note-box.warn { background:rgba(232,200,74,.05); border:1px solid rgba(232,200,74,.2); color:var(--gold); }
+
+@media(max-width:480px) {
+  .input-grid { grid-template-columns:1fr; }
+  .field.span2 { grid-column:1; }
+  .nums-row { grid-template-columns:1fr 1fr; }
+  .num-big { font-size:2rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="hdr-sub">Pachinko Analytics</div>
+    <h1>BORDER<br><span>CALCULATOR</span></h1>
+    <div class="hdr-tags">
+      <span class="tag gold">3.57円換金率</span>
+      <span class="tag cyan">🤖 AI 高速検索</span>
+      <span class="tag fav">★ お気に入り対応</span>
+    </div>
+    <hr class="rule">
+  </div>
+
+  <!-- Step 1 -->
+  <div class="card">
+    <div class="card-label">Step 1 — 機種名で検索</div>
+
+    <!-- Favorites -->
+    <div id="favSection" style="display:none;">
+      <div class="fav-section">
+        <div class="fav-title">★ お気に入り</div>
+        <div class="fav-list" id="favList"></div>
+      </div>
+      <div class="fav-divider"></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-block">
+      <div class="search-row">
+        <input class="machine-input" id="machineInput"
+          type="text" placeholder="機種名を入力（例：北斗、牙狼、エヴァ）"
+          autocomplete="off" spellcheck="false">
+        <button class="search-btn" id="searchBtn" onclick="doSearch()">検索</button>
+        <button class="web-btn" id="webBtn" onclick="doWebSearch()" title="最新機種をWEBから検索（やや遅い）">🌐 最新</button>
+      </div>
+      <div class="search-hint" id="searchHint">
+        <span class="hint-idle">機種名を入力すると最新ボーダーをAIが自動取得します</span>
+      </div>
+      <div class="dropdown" id="dropdown" style="display:none;"></div>
+    </div>
+
+    <div id="cacheSection" style="display:none; margin-top:.9rem;">
+      <div style="font-size:.6rem; color:var(--muted); letter-spacing:.1em; margin-bottom:.4rem;">▸ 最近の検索</div>
+      <div class="cache-bar" id="cachePills"></div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card">
+    <div class="card-label">Step 2 — データ入力</div>
+
+    <div class="sel-box" id="selBox">
+      <div class="sel-info">
+        <div class="sel-lbl">選択中の機種</div>
+        <div class="sel-nm" id="selName">—</div>
+      </div>
+      <button class="sel-fav-btn" id="selFavBtn" onclick="toggleFavSelected()">☆ お気に入り</button>
+      <div class="sel-bdr">
+        <div class="sel-bdr-lbl">ボーダー（3.57円）</div>
+        <div class="sel-bdr-val" id="selBorder">—</div>
+        <div class="sel-bdr-unit">回 / 1000円</div>
+      </div>
+    </div>
+
+    <div class="input-grid">
+      <div class="field">
+        <label>スタート時の回転数 <em>（回）</em></label>
+        <input class="num-input" type="number" id="startRot" placeholder="0" min="0" value="0">
+      </div>
+
+      <div class="field">
+        <div class="field-hd">
+          <label id="investLbl">投資金額 <em>（円）</em></label>
+          <div class="unit-tgl">
+            <button class="utgl-btn on" id="btnYen"  onclick="setUnit('yen')">円</button>
+            <button class="utgl-btn"    id="btnBall" onclick="setUnit('ball')">玉</button>
+          </div>
+        </div>
+        <div class="invest-wrap">
+          <input class="num-input" type="number" id="investment"
+            placeholder="例: 5000" min="0" step="500" oninput="onInvestInput()" style="padding-right:2.2rem;">
+          <span class="invest-sfx" id="investSfx">円</span>
+        </div>
+        <div class="conv-hint" id="convHint"></div>
+      </div>
+
+      <div class="field span2">
+        <label>現在の回転数 <em>（回）</em></label>
+        <input class="num-input" type="number" id="currentRot" placeholder="例: 250" min="0">
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">CALCULATE</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result" id="result">
+    <div class="result-top" id="resultTop">
+      <div class="verdict-row">
+        <div class="verdict-icon" id="vIcon"></div>
+        <div>
+          <div class="verdict-title" id="vTitle"></div>
+          <div class="verdict-sub"   id="vSub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="nums-row">
+      <div class="num-cell">
+        <div class="num-cell-lbl">現在の回転率</div>
+        <div class="num-big cyan" id="rRate">—</div>
+        <div class="num-unit">回 / 1000円</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-cell-lbl">ボーダー（3.57円）</div>
+        <div class="num-big gold" id="rBorder">—</div>
+        <div class="num-unit">回 / 1000円</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-cell-lbl">ボーダーとの差</div>
+        <div class="num-big" id="rDiff">—</div>
+        <div class="num-unit">回</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-cell-lbl">純回転数</div>
+        <div class="num-big cyan" id="rNet">—</div>
+        <div class="num-unit">回（スタート除く）</div>
+      </div>
+    </div>
+    <div class="diff-area" id="diffArea" style="display:none;">
+      <div class="diff-hd"><span>ボーダー比較</span><strong id="diffLbl"></strong></div>
+      <div class="diff-track">
+        <div class="diff-mid"></div>
+        <div class="diff-fill" id="diffFill"></div>
+      </div>
+    </div>
+    <div class="detail-list">
+      <div class="d-row"><span class="d-key">投資金額（換算後）</span><span class="d-val" id="rInvest">—</span></div>
+      <div class="d-row"><span class="d-key">1000円あたり回転数</span><span class="d-val" id="rRate1k">—</span></div>
+      <div class="d-row" id="rSrcRow" style="display:none;">
+        <span class="d-key">データソース</span>
+        <span class="d-val" style="font-size:.7rem;font-family:'Noto Sans JP';color:var(--muted);" id="rSrc">—</span>
+      </div>
+    </div>
+    <div class="note-box warn" id="noNote" style="display:none;">
+      ⚠ ボーダーが取得できなかったため回転率のみ計算しました。機種名を変えて再検索してみてください。
+    </div>
+  </div>
+
+</div>
+<script>
+// ═══════════════════════════════
+//  FAVORITES
+// ═══════════════════════════════
+let favorites = [];
+
+async function loadFavs() {
+  try {
+    const r = await window.storage.get('pachi-favs');
+    if (r && r.value) favorites = JSON.parse(r.value);
+  } catch(_) {}
+  renderFavs();
+}
+
+async function saveFavs() {
+  try { await window.storage.set('pachi-favs', JSON.stringify(favorites)); } catch(_) {}
+}
+
+const isFav = name => favorites.some(f => f.name === name);
+
+function renderFavs() {
+  const sec  = document.getElementById('favSection');
+  const list = document.getElementById('favList');
+  if (!favorites.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = favorites.map((f, i) => `
+    <div class="fav-item" onclick="pickFav(${i})">
+      <span class="fav-star">★</span>
+      <span class="fav-name">${f.name}</span>
+      <span class="fav-bdr">${f.border.toFixed(1)}<em> 回/千円</em></span>
+      <button class="fav-del" title="削除" onclick="delFav(event,${i})">✕</button>
+    </div>`).join('');
+}
+
+function pickFav(i) {
+  const f = favorites[i]; if (!f) return;
+  selected = f;
+  machineInput.value = f.name;
+  hideDD();
+  showSel(f);
+  setHint('found', `★ 「${f.name}」をお気に入りから選択しました`);
+  machineInput.className = 'machine-input found';
+}
+
+function delFav(e, i) {
+  e.stopPropagation();
+  favorites.splice(i, 1);
+  saveFavs(); renderFavs();
+  if (selected) updateSelFavBtn(selected.name);
+  if (dropdown._items) showDD(dropdown._items);
+}
+
+function addFav(m) {
+  if (isFav(m.name)) return;
+  favorites.unshift({ name: m.name, border: m.border, src: m.src || 'AI取得' });
+  saveFavs(); renderFavs();
+}
+
+function toggleFavSelected() {
+  if (!selected) return;
+  if (isFav(selected.name)) {
+    const idx = favorites.findIndex(f => f.name === selected.name);
+    if (idx !== -1) favorites.splice(idx, 1);
+    saveFavs(); renderFavs();
+  } else {
+    addFav(selected);
+  }
+  updateSelFavBtn(selected.name);
+  if (dropdown._items) showDD(dropdown._items);
+}
+
+function updateSelFavBtn(name) {
+  const btn = document.getElementById('selFavBtn');
+  if (isFav(name)) {
+    btn.textContent = '★ お気に入り済み'; btn.classList.add('on');
+  } else {
+    btn.textContent = '☆ お気に入り'; btn.classList.remove('on');
+  }
+}
+
+// ═══════════════════════════════
+//  UNIT TOGGLE (円 / 玉)
+// ═══════════════════════════════
+let investUnit = 'yen';
+
+function setUnit(u) {
+  investUnit = u;
+  document.getElementById('btnYen') .classList.toggle('on', u === 'yen');
+  document.getElementById('btnBall').classList.toggle('on', u === 'ball');
+  document.getElementById('investLbl').innerHTML =
+    u === 'yen' ? '投資金額 <em>（円）</em>' : '投資金額 <em>（玉）</em>';
+  document.getElementById('investSfx').textContent = u === 'yen' ? '円' : '玉';
+  const inp = document.getElementById('investment');
+  inp.placeholder = u === 'yen' ? '例: 5000' : '例: 1250';
+  inp.step = u === 'yen' ? 500 : 250;
+  onInvestInput();
+}
+
+function onInvestInput() {
+  const v = parseFloat(document.getElementById('investment').value);
+  const h = document.getElementById('convHint');
+  if (!v || isNaN(v)) { h.textContent = ''; h.className = 'conv-hint'; return; }
+  if (investUnit === 'ball') {
+    h.textContent = `→ ${Math.round(v / 250 * 1000).toLocaleString()} 円（250玉=1000円換算）`;
+    h.className = 'conv-hint on';
+  } else {
+    h.textContent = `→ 約 ${Math.round(v / 1000 * 250).toLocaleString()} 玉`;
+    h.className = 'conv-hint';
+  }
+}
+
+function getYen() {
+  const v = parseFloat(document.getElementById('investment').value);
+  if (!v || v <= 0) return null;
+  return investUnit === 'ball' ? (v / 250) * 1000 : v;
+}
+
+// ═══════════════════════════════
+//  SEARCH
+// ═══════════════════════════════
+const cache = {};
+let selected = null;
+const machineInput = document.getElementById('machineInput');
+const searchBtn    = document.getElementById('searchBtn');
+const dropdown     = document.getElementById('dropdown');
+const searchHint   = document.getElementById('searchHint');
+dropdown._items    = null;
+let debTimer = null;
+
+machineInput.addEventListener('input', () => {
+  selected = null; hideSel();
+  clearTimeout(debTimer);
+  const q = machineInput.value.trim();
+  if (!q) { setHint('idle','機種名を入力すると最新ボーダーをAIが自動取得します'); hideDD(); return; }
+  const k = nrm(q);
+  if (cache[k]) { showDD(cache[k]); setHint('found',`✓ キャッシュから ${cache[k].length} 件表示中`); return; }
+  setHint('loading','<span class="sp">↻</span> 入力待機中...');
+  debTimer = setTimeout(doSearch, 900);
+});
+machineInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { clearTimeout(debTimer); doSearch(); }
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-block')) hideDD();
+});
+
+const nrm = s => s.trim().replace(/\s+/g,'');
+
+async function doSearch() {
+  const q = machineInput.value.trim(); if (!q) return;
+  const k = nrm(q);
+  if (cache[k]) { showDD(cache[k]); setHint('found', `✓ キャッシュから ${cache[k].length} 件表示中`); return; }
+
+  setDisabled(true);
+  machineInput.className = 'machine-input searching';
+  setHint('loading', `<span class="sp">↻</span> 「${q}」を検索中...`);
+  hideDD();
+
+  try {
+    const res = await Promise.race([
+      fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 600,
+          system: `あなたはパチンコのボーダーライン専門家です。
+3.57円換金率（28個交換・4円貸し）のボーダーを答えてください。
+
+ルール:
+- シリーズ名なら最新作から最大6機種を新しい順（導入年が新しい順）で返す
+- 部分一致でも返す
+- e〇〇 / P〇〇 / PA〇〇 / CR〇〇 プレフィックスを正確に付ける
+- ボーダーは1000円あたりの回転数（小数点1桁）
+- 2024〜2025年の新台を特に優先する
+
+必ずこのJSONのみを返す（説明・コードブロック不要）:
+[{"name":"機種名","border":数値,"year":導入年},...] 
+year は分からなければ0でよい`,
+          messages: [{ role: 'user', content: `「${q}」のパチンコのボーダーを最新順で教えてください。` }]
+        })
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 20000))
+    ]);
+
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    const items = parseItems(data, 'AI（学習データ）');
+
+    if (items.length) {
+      // 年で降順ソート（year=0 は後ろ）
+      items.sort((a, b) => (b.year||0) - (a.year||0));
+      cache[k] = items;
+      showDD(items);
+      machineInput.className = 'machine-input found';
+      setHint('found', `✓ ${items.length} 件見つかりました　🌐最新ボタンで最新機種も確認できます`);
+      refreshCache();
+    } else {
+      machineInput.className = 'machine-input error';
+      setHint('none', `⚠ 見つかりませんでした。🌐最新ボタンでWEB検索を試してください。`);
+      hideDD();
+    }
+  } catch(err) {
+    machineInput.className = 'machine-input error';
+    setHint('err', err.message === 'TIMEOUT'
+      ? '❌ タイムアウト。もう一度試してください。'
+      : `❌ エラー: ${err.message}`);
+  }
+  setDisabled(false);
+}
+
+async function doWebSearch() {
+  const q = machineInput.value.trim(); if (!q) return;
+  const k = nrm(q) + '_web';
+
+  if (cache[k]) { showDD(cache[k]); setHint('found', `✓ WEBキャッシュから ${cache[k].length} 件表示中`); return; }
+
+  setDisabled(true);
+  machineInput.className = 'machine-input searching';
+  setHint('loading', `<span class="sp">↻</span> WEBで最新機種を検索中（10〜20秒）...`);
+  hideDD();
+
+  try {
+    const res = await Promise.race([
+      fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 800,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          system: `あなたはパチンコのボーダーライン専門家です。
+web_searchを使って最新機種のボーダーを調べてください。
+
+重要:
+- 必ず最新・現行稼働機種を新しい導入順で返す
+- 3.57円換金率（28個交換）のボーダーを使う
+- DMMぱちタウン / パチンコ必勝ガイド / 遊タイムナビ を検索する
+- e〇〇 / P〇〇 / PA〇〇 プレフィックスを正確に含める
+
+最終回答は必ずこのJSONのみ（説明不要）:
+[{"name":"機種名","border":数値,"year":導入年},...]`,
+          messages: [{ role: 'user', content: `「${q}」の最新パチンコ機種のボーダー（3.57円換金率）を新しい導入順で調べてください。` }]
+        })
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 45000))
+    ]);
+
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    const items = parseItems(data, 'WEB取得（最新）');
+
+    if (items.length) {
+      items.sort((a, b) => (b.year||0) - (a.year||0));
+      cache[k] = items;
+      // 通常キャッシュも上書き（最新データで）
+      cache[nrm(q)] = items;
+      showDD(items);
+      machineInput.className = 'machine-input found';
+      setHint('found', `🌐 WEB検索完了 — ${items.length} 件（最新順）`);
+      refreshCache();
+    } else {
+      machineInput.className = 'machine-input error';
+      setHint('none', `⚠ WEBでも「${q}」の情報が見つかりませんでした。`);
+      hideDD();
+    }
+  } catch(err) {
+    machineInput.className = 'machine-input error';
+    setHint('err', err.message === 'TIMEOUT'
+      ? '❌ タイムアウト。もう一度試してください。'
+      : `❌ WEB検索エラー: ${err.message}`);
+  }
+  setDisabled(false);
+}
+
+// APIレスポンスからitemsをパース
+function parseItems(data, src) {
+  const allText = (data.content || [])
+    .filter(b => b.type === 'text')
+    .map(b => b.text)
+    .join('');
+  const m = allText.match(/\[[\s\S]*?\]/);
+  let machines = [];
+  if (m) { try { machines = JSON.parse(m[0]); } catch(_) {} }
+  return machines
+    .filter(m => m && m.name && parseFloat(m.border) > 0)
+    .map(m => ({ name: m.name, border: parseFloat(m.border), year: parseInt(m.year)||0, src }));
+}
+
+function setDisabled(v) {
+  document.getElementById('searchBtn').disabled = v;
+  document.getElementById('webBtn').disabled = v;
+}
+
+function showDD(items) {
+  dropdown.innerHTML = items.map((m,i) => {
+    const on = isFav(m.name);
+    return `<div class="drop-item">
+      <div class="drop-sel" onclick="pickDrop(${i})">
+        <span class="drop-name">${m.name}</span>
+        <span class="drop-border">${m.border.toFixed(1)}<span> 回/千円</span></span>
+      </div>
+      <button class="drop-fav ${on?'on':''}" onclick="toggleFavDrop(${i},this)" title="${on?'お気に入り解除':'お気に入り追加'}">${on?'★':'☆'}</button>
+    </div>`;
+  }).join('');
+  dropdown._items = items;
+  dropdown.style.display = 'block';
+}
+
+function toggleFavDrop(i, btn) {
+  const m = dropdown._items[i]; if(!m) return;
+  if (isFav(m.name)) {
+    const idx = favorites.findIndex(f=>f.name===m.name);
+    if(idx!==-1) favorites.splice(idx,1);
+    btn.textContent='☆'; btn.classList.remove('on'); btn.title='お気に入り追加';
+  } else {
+    addFav(m);
+    btn.textContent='★'; btn.classList.add('on'); btn.title='お気に入り解除';
+  }
+  saveFavs(); renderFavs();
+  if(selected && selected.name===m.name) updateSelFavBtn(selected.name);
+}
+
+function pickDrop(i) {
+  const items = dropdown._items; if(!items||!items[i]) return;
+  const m = items[i];
+  selected = m;
+  machineInput.value = m.name;
+  hideDD();
+  showSel(m);
+  setHint('found', `✓ 「${m.name}」ボーダー ${m.border.toFixed(1)} 回を設定しました`);
+  machineInput.className = 'machine-input found';
+}
+
+function hideDD() { dropdown.style.display='none'; }
+
+function showSel(m) {
+  document.getElementById('selName').textContent = m.name;
+  document.getElementById('selBorder').textContent = m.border.toFixed(1);
+  document.getElementById('selBox').classList.add('show');
+  updateSelFavBtn(m.name);
+}
+function hideSel() { document.getElementById('selBox').classList.remove('show'); }
+
+function setHint(type, html) {
+  searchHint.innerHTML = `<span class="hint-${type}">${html}</span>`;
+}
+
+function refreshCache() {
+  const keys = Object.keys(cache);
+  const sec = document.getElementById('cacheSection');
+  if (!keys.length) { sec.style.display='none'; return; }
+  sec.style.display='block';
+  document.getElementById('cachePills').innerHTML = keys.map(k=>
+    `<span class="cache-pill" onclick="loadCache('${k}')">${cache[k][0].name.slice(0,10)}… (${cache[k].length}件)</span>`
+  ).join('');
+}
+
+function loadCache(key) {
+  if(!cache[key]) return;
+  machineInput.value = cache[key][0].name;
+  showDD(cache[key]);
+  setHint('found',`✓ キャッシュから ${cache[key].length} 件表示中`);
+  machineInput.className = 'machine-input found';
+}
+
+// ═══════════════════════════════
+//  CALCULATE
+// ═══════════════════════════════
+function calculate() {
+  const startRot  = parseFloat(document.getElementById('startRot').value) || 0;
+  const investYen = getYen();
+  const curRot    = parseFloat(document.getElementById('currentRot').value);
+  const rawInvest = parseFloat(document.getElementById('investment').value);
+
+  if (!investYen) { alert('投資金額を入力してください'); return; }
+  if (isNaN(curRot)) { alert('現在の回転数を入力してください'); return; }
+  const net = curRot - startRot;
+  if (net < 0) { alert('現在の回転数がスタート時より小さいです'); return; }
+
+  const rate = (net / investYen) * 1000;
+
+  document.getElementById('rRate').textContent   = rate.toFixed(1);
+  document.getElementById('rNet').textContent    = net.toLocaleString();
+  document.getElementById('rRate1k').textContent = rate.toFixed(2) + ' 回';
+
+  const investDisp = investUnit === 'ball'
+    ? `${rawInvest.toLocaleString()} 玉 (${Math.round(investYen).toLocaleString()} 円)`
+    : `${Math.round(investYen).toLocaleString()} 円`;
+  document.getElementById('rInvest').textContent = investDisp;
+
+  const result = document.getElementById('result');
+  const rtop   = document.getElementById('resultTop');
+  const diffA  = document.getElementById('diffArea');
+  const noNote = document.getElementById('noNote');
+  const srcRow = document.getElementById('rSrcRow');
+
+  if (selected && selected.border) {
+    document.getElementById('rBorder').textContent = selected.border.toFixed(1);
+    const diff = rate - selected.border;
+    const sign = diff >= 0 ? '+' : '';
+    const dEl  = document.getElementById('rDiff');
+    dEl.textContent = `${sign}${diff.toFixed(1)}`;
+
+    let cls, icon, title, sub;
+    if      (diff >  3) { cls='pos'; icon='🎯'; title=`ボーダー大幅超え！ ${sign}${diff.toFixed(1)} 回`; sub='回転率が優秀です。このまま続行が期待値プラスです。'; }
+    else if (diff >  0.5) { cls='pos'; icon='✅'; title=`ボーダー超え  ${sign}${diff.toFixed(1)} 回`; sub='ボーダーを上回っています。続行推奨です。'; }
+    else if (diff >= -0.5) { cls='even'; icon='⚖️'; title=`ほぼボーダー（${sign}${diff.toFixed(1)} 回）`; sub='損益分岐点に近い状態です。様子を見ながら判断を。'; }
+    else if (diff >  -3) { cls='neg'; icon='⚠️'; title=`ボーダー割れ  ${diff.toFixed(1)} 回`; sub='回転率が不足しています。台移動を検討してください。'; }
+    else                  { cls='neg'; icon='🚨'; title=`大幅ボーダー割れ  ${diff.toFixed(1)} 回`; sub='かなり不利な状態です。撤退を強く推奨します。'; }
+
+    rtop.className=`result-top ${cls}`;
+    dEl.className=`num-big ${cls}`;
+    document.getElementById('vIcon').textContent=icon;
+    document.getElementById('vTitle').className=`verdict-title ${cls}`;
+    document.getElementById('vTitle').textContent=title;
+    document.getElementById('vSub').textContent=sub;
+
+    diffA.style.display='block';
+    const pct=Math.min(Math.abs(diff)/selected.border*100,48);
+    const fill=document.getElementById('diffFill');
+    document.getElementById('diffLbl').textContent=`${sign}${diff.toFixed(1)} 回`;
+    if(diff>=0){ fill.style.cssText=`left:50%;right:auto;width:${pct}%;background:linear-gradient(90deg,#2ef08a,#1ab060)`; }
+    else       { fill.style.cssText=`right:50%;left:auto;width:${pct}%;background:linear-gradient(270deg,#ff3b5c,#cc2040)`; }
+
+    srcRow.style.display='flex';
+    document.getElementById('rSrc').textContent=selected.src||'AI取得';
+    noNote.style.display='none';
+  } else {
+    document.getElementById('rBorder').textContent='—';
+    const dEl=document.getElementById('rDiff'); dEl.textContent='—'; dEl.className='num-big gold';
+    rtop.className='result-top even';
+    document.getElementById('vIcon').textContent='📊';
+    document.getElementById('vTitle').className='verdict-title even';
+    document.getElementById('vTitle').textContent=`回転率 ${rate.toFixed(2)} 回 / 1000円`;
+    document.getElementById('vSub').textContent='機種未選択のためボーダーとの比較ができません。先に機種を検索・選択してください。';
+    diffA.style.display='none'; srcRow.style.display='none'; noNote.style.display='block';
+  }
+
+  result.className='result show';
+  result.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── init ──
+loadFavs();
+</script>
+</body>
+</html>
