@@ -39,7 +39,7 @@ self.addEventListener('install', e => {
 });
 self.addEventListener('fetch', e => {
   // Network first for API calls, cache first for app shell
-  if (e.request.url.includes('api.anthropic.com') || e.request.url.includes('fonts.googleapis')) {
+  if (e.request.url.includes('fonts.googleapis')) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
   } else {
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
@@ -387,6 +387,116 @@ hr.rule {
   .nums-row { grid-template-columns:1fr 1fr; }
   .num-big { font-size:2rem; }
 }
+
+/* ── Settings Modal ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,.85); align-items:center; justify-content:center;
+  padding:1.2rem;
+}
+.modal-overlay.show { display:flex; }
+.modal-box {
+  background:#14142a; border:1px solid var(--gold);
+  border-radius:10px; padding:1.8rem; width:100%; max-width:500px;
+  box-shadow:0 0 60px rgba(232,200,74,.15);
+}
+.modal-title {
+  font-family:'Bebas Neue',sans-serif; font-size:1.4rem;
+  color:var(--gold); letter-spacing:.1em; margin-bottom:1rem;
+}
+.modal-desc { font-size:.8rem; color:var(--muted); line-height:1.7; margin-bottom:1.2rem; }
+.modal-desc a { color:var(--cyan); }
+.modal-input {
+  width:100%; background:rgba(0,0,0,.5); border:1px solid var(--dim);
+  border-radius:6px; color:var(--text); font-family:monospace;
+  font-size:.9rem; padding:.75rem 1rem; outline:none;
+  transition:border-color .15s; margin-bottom:.8rem;
+}
+.modal-input:focus { border-color:var(--gold); }
+.modal-btns { display:flex; gap:.6rem; justify-content:flex-end; }
+.modal-btn-save {
+  padding:.65rem 1.4rem; border-radius:6px;
+  background:rgba(232,200,74,.1); border:1px solid var(--gold);
+  color:var(--gold); font-weight:700; font-size:.8rem;
+  cursor:pointer; transition:all .15s; font-family:'Noto Sans JP',sans-serif;
+}
+.modal-btn-save:hover { background:rgba(232,200,74,.2); }
+.modal-btn-cancel {
+  padding:.65rem 1.2rem; border-radius:6px;
+  background:transparent; border:1px solid var(--dim);
+  color:var(--muted); font-size:.8rem;
+  cursor:pointer; font-family:'Noto Sans JP',sans-serif;
+}
+/* settings button in header */
+.settings-btn {
+  position:fixed; bottom:1.2rem; right:1.2rem; z-index:500;
+  background:rgba(10,10,15,.9); border:1px solid var(--dim);
+  border-radius:50%; width:44px; height:44px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:1.1rem; transition:border-color .15s;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.settings-btn:hover { border-color:var(--gold); }
+/* hint bar */
+.settings-hint {
+  background:rgba(255,59,92,.08); border:1px solid rgba(255,59,92,.25);
+  border-radius:6px; padding:.7rem 1rem; margin-bottom:1rem;
+  font-size:.75rem; color:var(--red); display:flex;
+  align-items:center; justify-content:space-between; gap:.8rem;
+}
+.settings-hint a { color:var(--gold); cursor:pointer; font-weight:700; }
+
+
+/* ── Settings Modal ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,.88); align-items:center; justify-content:center; padding:1.2rem;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#14142a; border:1px solid var(--gold);
+  border-radius:10px; padding:1.8rem; width:100%; max-width:500px;
+  box-shadow:0 0 60px rgba(232,200,74,.15);
+}
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--gold); letter-spacing:.1em; margin-bottom:1rem; }
+.modal-desc { font-size:.8rem; color:var(--muted); line-height:1.7; margin-bottom:1.2rem; }
+.modal-desc a { color:var(--cyan); }
+.modal-input {
+  width:100%; background:rgba(0,0,0,.5); border:1px solid var(--dim);
+  border-radius:6px; color:var(--text); font-family:monospace;
+  font-size:.9rem; padding:.75rem 1rem; outline:none; transition:border-color .15s; margin-bottom:.8rem;
+}
+.modal-input:focus { border-color:var(--gold); }
+.modal-btns { display:flex; gap:.6rem; justify-content:flex-end; }
+.mbtn-save {
+  padding:.65rem 1.4rem; border-radius:6px;
+  background:rgba(232,200,74,.1); border:1px solid var(--gold);
+  color:var(--gold); font-weight:700; font-size:.8rem;
+  cursor:pointer; transition:all .15s; font-family:'Noto Sans JP',sans-serif;
+}
+.mbtn-save:hover { background:rgba(232,200,74,.2); }
+.mbtn-cancel {
+  padding:.65rem 1.2rem; border-radius:6px;
+  background:transparent; border:1px solid var(--dim);
+  color:var(--muted); font-size:.8rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif;
+}
+.settings-fab {
+  position:fixed; bottom:1.2rem; right:1.2rem; z-index:500;
+  background:rgba(10,10,15,.92); border:1px solid var(--dim);
+  border-radius:50%; width:46px; height:46px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:1.15rem; transition:border-color .15s;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.settings-fab:hover { border-color:var(--gold); }
+.settings-hint {
+  display:none; background:rgba(255,59,92,.08); border:1px solid rgba(255,59,92,.25);
+  border-radius:6px; padding:.65rem 1rem; margin-bottom:.9rem;
+  font-size:.75rem; color:var(--red);
+  align-items:center; justify-content:space-between; gap:.8rem;
+}
+.settings-hint a { color:var(--gold); cursor:pointer; font-weight:700; text-decoration:none; }
+
 </style>
 </head>
 <body>
@@ -397,12 +507,20 @@ hr.rule {
     <h1>BORDER<br><span>CALCULATOR</span></h1>
     <div class="hdr-tags">
       <span class="tag gold">3.57円換金率</span>
-      <span class="tag cyan">🤖 AI 高速検索</span>
+      <span class="tag cyan">🤖 Gemini AI 無料検索</span>
       <span class="tag fav">★ お気に入り対応</span>
+      <span id="apiKeyStatus" onclick="openSettings()" style="cursor:pointer;" style="font-size:.62rem; padding:.2rem .65rem; border-radius:3px; letter-spacing:.03em; cursor:pointer;" onclick="openSettings()">⚙ APIキー設定</span>
     </div>
     <hr class="rule">
   </div>
 
+
+  <div class="settings-hint" id="settingsHint" style="display:none;">
+    ⚠ APIキーが未設定です。検索するにはAPIキーの設定が必要です。
+    <a onclick="openSettings()">今すぐ設定 →</a>
+  </div>
+
+  <div class="settings-hint" id="settingsHint">⚠ AIキー未設定。DBのみ利用中。　<a onclick="openSettings()">無料AIキーを設定して検索精度UP →</a></div>
   <!-- Step 1 -->
   <div class="card">
     <div class="card-label">Step 1 — 機種名で検索</div>
@@ -540,25 +658,228 @@ hr.rule {
 
 </div>
 <script>
+
+const STATIC_DB = [
+  // ── エヴァンゲリオン ──
+  {name:"e新世紀エヴァンゲリオン〜はじまりの記憶〜", border:19.5, year:2024},
+  {name:"Pエヴァンゲリオン〜超覚醒〜", border:19.0, year:2023},
+  {name:"Pフィーバー新世紀エヴァンゲリオン〜未来への咆哮〜", border:18.5, year:2022},
+  {name:"Pフィーバー新世紀エヴァンゲリオン15", border:19.2, year:2021},
+  {name:"PA新世紀エヴァンゲリオン〜未来への咆哮〜SPECIAL", border:18.3, year:2020},
+  {name:"P新世紀エヴァンゲリオン〜未来への翼〜", border:18.8, year:2019},
+  // ── 北斗の拳 ──
+  {name:"e北斗の拳11 暴凶星", border:17.5, year:2024},
+  {name:"e北斗の拳10 夢幻闘乱", border:18.2, year:2023},
+  {name:"Pフィーバー北斗の拳〜強敵〜", border:17.8, year:2022},
+  {name:"PA北斗の拳8 救世主伝説", border:16.9, year:2021},
+  {name:"P北斗の拳7 新伝説創造", border:17.1, year:2020},
+  {name:"CR北斗の拳6 拳王", border:16.5, year:2018},
+  // ── 牙狼 ──
+  {name:"P牙狼GOLD IMPACT", border:17.5, year:2023},
+  {name:"P牙狼コレクション 遊タイムver.", border:48.2, year:2022},
+  {name:"P激デジ真・牙狼", border:17.8, year:2022},
+  {name:"PA牙狼〜MAKAISENKI〜", border:18.1, year:2021},
+  {name:"P牙狼〜照魔の刻〜", border:17.6, year:2020},
+  {name:"CR牙狼〜魔戒ノ花〜", border:16.8, year:2018},
+  // ── 海物語 ──
+  {name:"Pスーパー海物語IN沖縄5", border:19.8, year:2024},
+  {name:"PAスーパー海物語IN沖縄4 桜ver.", border:18.9, year:2022},
+  {name:"Pスーパー海物語IN沖縄4", border:18.5, year:2021},
+  {name:"Pスーパー海物語IN JAPAN2", border:17.9, year:2020},
+  {name:"PAスーパー海物語IN JAPAN2金富士99ver.", border:17.6, year:2020},
+  {name:"CR大海物語4", border:16.5, year:2017},
+  // ── 水戸黄門 ──
+  {name:"P水戸黄門3", border:20.5, year:2024},
+  {name:"P水戸黄門2", border:19.8, year:2022},
+  {name:"PA水戸黄門", border:18.9, year:2020},
+  // ── 暴れん坊将軍 ──
+  {name:"P暴れん坊将軍2", border:20.1, year:2024},
+  {name:"P暴れん坊将軍", border:19.3, year:2022},
+  // ── リング ──
+  {name:"Pリング〜呪いの7日間3〜", border:18.7, year:2024},
+  {name:"Pリング〜呪いの7日間2〜", border:18.2, year:2022},
+  {name:"PAリング〜呪いの7日間〜", border:17.8, year:2020},
+  // ── バジリスク ──
+  {name:"PフィーバーバジリスクS", border:19.2, year:2024},
+  {name:"Pフィーバーバジリスク〜絆〜弐", border:18.8, year:2023},
+  {name:"Pフィーバーバジリスク〜絆〜", border:18.1, year:2021},
+  // ── ルパン三世 ──
+  {name:"Pルパン三世〜GAME OF PANTHER〜", border:20.3, year:2024},
+  {name:"Pルパン三世〜消されたルパン〜", border:19.6, year:2023},
+  {name:"Pルパン三世 YEARS LATER", border:18.9, year:2022},
+  {name:"PAルパン三世〜大泥棒団〜", border:18.3, year:2021},
+  // ── 仮面ライダー ──
+  {name:"P仮面ライダー BLACK SUN", border:18.8, year:2024},
+  {name:"Pフィーバー仮面ライダー轟音", border:18.5, year:2023},
+  {name:"P仮面ライダー〜轟音〜", border:17.9, year:2022},
+  // ── 機動戦士ガンダム ──
+  {name:"P機動戦士ガンダムSEED FREEDOM", border:19.7, year:2024},
+  {name:"P機動戦士ガンダムユニコーン", border:18.9, year:2023},
+  {name:"PAフィーバー機動戦士ガンダム", border:18.2, year:2021},
+  // ── 冬のソナタ ──
+  {name:"P冬のソナタ〜君を忘れない〜FOREVER", border:21.3, year:2022},
+  {name:"P冬のソナタ〜君を忘れない〜", border:20.1, year:2020},
+  // ── まどか☆マギカ ──
+  {name:"Pまどか☆マギカ4", border:19.3, year:2024},
+  {name:"Pまどか☆マギカ3", border:18.8, year:2022},
+  {name:"PA魔法少女まどか☆マギカ2", border:18.1, year:2020},
+  // ── 花の慶次 ──
+  {name:"P花の慶次〜極〜", border:17.3, year:2024},
+  {name:"PA花の慶次〜蓮〜", border:17.1, year:2022},
+  {name:"P花の慶次〜蓮〜99version", border:47.6, year:2022},
+  // ── サンダーVライトニング ──
+  {name:"Pサンダーライトニング", border:18.9, year:2023},
+  {name:"PAサンダーV2 ライトニング", border:18.3, year:2021},
+  // ── 大工の源さん ──
+  {name:"P大工の源さん超韋駄天", border:20.8, year:2023},
+  {name:"PA大工の源さん超韋駄天", border:20.2, year:2021},
+  // ── 哲也 ──
+  {name:"P哲也〜天運地力〜", border:19.5, year:2023},
+  // ── 押忍！番長 ──
+  {name:"PA押忍！番長3", border:19.8, year:2022},
+  // ── ドラム海物語 ──
+  {name:"Pドラム海物語", border:20.1, year:2023},
+  // ── ゴルゴ13 ──
+  {name:"Pゴルゴ13〜必殺の一撃〜", border:18.7, year:2022},
+  // ── 炎炎ノ消防隊 ──
+  {name:"P炎炎ノ消防隊", border:19.5, year:2023},
+  // ── 交響詩篇エウレカセブン ──
+  {name:"PA交響詩篇エウレカセブン〜HI-EVOLUTION ZERO〜", border:18.6, year:2021},
+  // ── ブラックラグーン ──
+  {name:"Pブラックラグーン4", border:20.8, year:2024},
+  {name:"Pブラックラグーン3", border:19.5, year:2022},
+  // ── わんわんパラダイス ──
+  {name:"Pわんわんパラダイス甘デジ", border:26.5, year:2023},
+  // ── キャッツアイ ──
+  {name:"PAキャッツアイ", border:19.2, year:2022},
+  // ── シティーハンター ──
+  {name:"Pシティーハンター", border:19.8, year:2023},
+  // ── 聖闘士星矢 ──
+  {name:"P聖闘士星矢〜海皇覚醒〜", border:19.6, year:2022},
+  // ── ドラゴンボール ──
+  {name:"Pドラゴンボール超鬼舞辻悟空", border:19.4, year:2023},
+  // ── ワンピース ──
+  {name:"PフィーバーONEPIECE〜麦わらの一味〜", border:19.2, year:2022},
+  // ── 天龍 ──
+  {name:"P天龍〜至高の決戦〜", border:18.9, year:2022},
+  // ── 勝利の女神NIKKE ──
+  {name:"P勝利の女神NIKKE", border:20.5, year:2024},
+  // ── 呪術廻戦 ──
+  {name:"P呪術廻戦", border:20.2, year:2024},
+  // ── 鬼滅の刃 ──
+  {name:"P鬼滅の刃", border:20.8, year:2024},
+  // ── スラムダンク ──
+  {name:"Pスラムダンク", border:19.6, year:2023},
+];
+
+// ═══════════════════════════════
+//  API KEY MANAGEMENT (Gemini)
+// ═══════════════════════════════
+function getApiKey() {
+  return localStorage.getItem('pachi_gemini_key') || '';
+}
+function saveApiKey(key) {
+  localStorage.setItem('pachi_gemini_key', key.trim());
+}
+function openSettings() {
+  document.getElementById('settingsModal').style.display = 'flex';
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('apiKeyInput').focus();
+}
+function closeSettings() {
+  document.getElementById('settingsModal').style.display = 'none';
+}
+function saveSettings() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) { alert('APIキーを入力してください'); return; }
+  saveApiKey(key);
+  closeSettings();
+  document.getElementById('settingsHint').style.display = 'none';
+  updateKeyStatus();
+}
+function updateKeyStatus() {
+  const el = document.getElementById('apiKeyStatus');
+  if (!el) return;
+  if (getApiKey()) {
+    el.textContent = '✅ AIキー設定済み';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = '⚙ AIキー未設定';
+    el.style.color = 'var(--red)';
+  }
+}
+
+// ═══════════════════════════════
+//  STATIC DB SEARCH
+// ═══════════════════════════════
+function searchStaticDB(q) {
+  const kw = q.replace(/[　\s]/g,'').toLowerCase()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/[ぁ-ん]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
+  const hits = STATIC_DB.filter(m => {
+    const n = m.name.replace(/[　\s]/g,'').toLowerCase()
+      .replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .replace(/[ぁ-ん]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
+    return n.includes(kw) || kw.includes(n.slice(0, Math.min(4, n.length)));
+  });
+  return hits.sort((a,b) => (b.year||0) - (a.year||0));
+}
+
+// ═══════════════════════════════
+//  GEMINI API SEARCH
+// ═══════════════════════════════
+async function callGemini(q) {
+  const key = getApiKey();
+  if (!key) return null;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+  const prompt = `あなたはパチンコのボーダーライン専門家です。
+「${q}」について3.57円換金率（28個交換）のボーダーラインを答えてください。
+シリーズ名なら最新作から最大6機種を導入が新しい順で返してください。
+e〇〇/P〇〇/PA〇〇プレフィックスを正確に付けること。
+ボーダーは1000円あたりの回転数（小数点1桁）。
+必ずこのJSONのみ返す（説明不要）:
+[{"name":"機種名","border":数値,"year":導入西暦年}]`;
+
+  const res = await Promise.race([
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    }),
+    new Promise((_, r) => setTimeout(() => r(new Error('TIMEOUT')), 20000))
+  ]);
+  if (!res.ok) throw new Error(`Gemini API ${res.status}`);
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const m = text.match(/\[[\s\S]*?\]/);
+  if (!m) return [];
+  try {
+    const arr = JSON.parse(m[0]);
+    return arr.filter(x => x && x.name && parseFloat(x.border) > 0)
+      .map(x => ({ name: x.name, border: parseFloat(x.border), year: parseInt(x.year)||0, src: 'AI検索（Gemini）' }));
+  } catch(_) { return []; }
+}
+
 // ═══════════════════════════════
 //  FAVORITES
 // ═══════════════════════════════
 let favorites = [];
-
 async function loadFavs() {
   try {
     const r = await window.storage.get('pachi-favs');
     if (r && r.value) favorites = JSON.parse(r.value);
   } catch(_) {}
   renderFavs();
+  updateKeyStatus();
+  if (!getApiKey()) {
+    const h = document.getElementById('settingsHint');
+    if (h) h.style.display = 'flex';
+  }
 }
-
 async function saveFavs() {
   try { await window.storage.set('pachi-favs', JSON.stringify(favorites)); } catch(_) {}
 }
-
 const isFav = name => favorites.some(f => f.name === name);
-
 function renderFavs() {
   const sec  = document.getElementById('favSection');
   const list = document.getElementById('favList');
@@ -572,17 +893,14 @@ function renderFavs() {
       <button class="fav-del" title="削除" onclick="delFav(event,${i})">✕</button>
     </div>`).join('');
 }
-
 function pickFav(i) {
   const f = favorites[i]; if (!f) return;
   selected = f;
   machineInput.value = f.name;
-  hideDD();
-  showSel(f);
+  hideDD(); showSel(f);
   setHint('found', `★ 「${f.name}」をお気に入りから選択しました`);
   machineInput.className = 'machine-input found';
 }
-
 function delFav(e, i) {
   e.stopPropagation();
   favorites.splice(i, 1);
@@ -590,40 +908,31 @@ function delFav(e, i) {
   if (selected) updateSelFavBtn(selected.name);
   if (dropdown._items) showDD(dropdown._items);
 }
-
 function addFav(m) {
   if (isFav(m.name)) return;
-  favorites.unshift({ name: m.name, border: m.border, src: m.src || 'AI取得' });
+  favorites.unshift({ name: m.name, border: m.border, src: m.src||'DB' });
   saveFavs(); renderFavs();
 }
-
 function toggleFavSelected() {
   if (!selected) return;
   if (isFav(selected.name)) {
     const idx = favorites.findIndex(f => f.name === selected.name);
     if (idx !== -1) favorites.splice(idx, 1);
     saveFavs(); renderFavs();
-  } else {
-    addFav(selected);
-  }
+  } else { addFav(selected); }
   updateSelFavBtn(selected.name);
   if (dropdown._items) showDD(dropdown._items);
 }
-
 function updateSelFavBtn(name) {
   const btn = document.getElementById('selFavBtn');
-  if (isFav(name)) {
-    btn.textContent = '★ お気に入り済み'; btn.classList.add('on');
-  } else {
-    btn.textContent = '☆ お気に入り'; btn.classList.remove('on');
-  }
+  if (isFav(name)) { btn.textContent = '★ お気に入り済み'; btn.classList.add('on'); }
+  else { btn.textContent = '☆ お気に入り'; btn.classList.remove('on'); }
 }
 
 // ═══════════════════════════════
-//  UNIT TOGGLE (円 / 玉)
+//  UNIT TOGGLE
 // ═══════════════════════════════
 let investUnit = 'yen';
-
 function setUnit(u) {
   investUnit = u;
   document.getElementById('btnYen') .classList.toggle('on', u === 'yen');
@@ -636,7 +945,6 @@ function setUnit(u) {
   inp.step = u === 'yen' ? 500 : 250;
   onInvestInput();
 }
-
 function onInvestInput() {
   const v = parseFloat(document.getElementById('investment').value);
   const h = document.getElementById('convHint');
@@ -649,7 +957,6 @@ function onInvestInput() {
     h.className = 'conv-hint';
   }
 }
-
 function getYen() {
   const v = parseFloat(document.getElementById('investment').value);
   if (!v || v <= 0) return null;
@@ -665,6 +972,8 @@ const machineInput = document.getElementById('machineInput');
 const searchBtn    = document.getElementById('searchBtn');
 const dropdown     = document.getElementById('dropdown');
 const searchHint   = document.getElementById('searchHint');
+const cacheSection = document.getElementById('cacheSection');
+const cachePillsEl = document.getElementById('cachePills');
 dropdown._items    = null;
 let debTimer = null;
 
@@ -672,11 +981,18 @@ machineInput.addEventListener('input', () => {
   selected = null; hideSel();
   clearTimeout(debTimer);
   const q = machineInput.value.trim();
-  if (!q) { setHint('idle','機種名を入力すると最新ボーダーをAIが自動取得します'); hideDD(); return; }
+  if (!q) { setHint('idle','機種名を入力（例：北斗、エヴァ、牙狼）'); hideDD(); return; }
   const k = nrm(q);
-  if (cache[k]) { showDD(cache[k]); setHint('found',`✓ キャッシュから ${cache[k].length} 件表示中`); return; }
-  setHint('loading','<span class="sp">↻</span> 入力待機中...');
-  debTimer = setTimeout(doSearch, 900);
+  if (cache[k]) { showDD(cache[k]); setHint('found',`✓ ${cache[k].length} 件表示中`); return; }
+  // すぐDBを検索
+  const dbHits = searchStaticDB(q);
+  if (dbHits.length) {
+    showDD(dbHits.map(m => ({...m, src:'データベース'})));
+    setHint('found', `✓ DB: ${dbHits.length} 件見つかりました`);
+  } else {
+    setHint('loading','<span class="sp">↻</span> 入力待機中...');
+  }
+  debTimer = setTimeout(doSearch, 800);
 });
 machineInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') { clearTimeout(debTimer); doSearch(); }
@@ -684,197 +1000,126 @@ machineInput.addEventListener('keydown', e => {
 document.addEventListener('click', e => {
   if (!e.target.closest('.search-block')) hideDD();
 });
-
 const nrm = s => s.trim().replace(/\s+/g,'');
 
 async function doSearch() {
   const q = machineInput.value.trim(); if (!q) return;
   const k = nrm(q);
-  if (cache[k]) { showDD(cache[k]); setHint('found', `✓ キャッシュから ${cache[k].length} 件表示中`); return; }
+  if (cache[k]) { showDD(cache[k]); setHint('found',`✓ ${cache[k].length} 件表示中`); return; }
 
-  setDisabled(true);
-  machineInput.className = 'machine-input searching';
-  setHint('loading', `<span class="sp">↻</span> 「${q}」を検索中...`);
-  hideDD();
+  // まずDB検索
+  const dbHits = searchStaticDB(q).map(m => ({...m, src:'データベース'}));
 
-  try {
-    const res = await Promise.race([
-      fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 600,
-          system: `あなたはパチンコのボーダーライン専門家です。
-3.57円換金率（28個交換・4円貸し）のボーダーを答えてください。
-
-ルール:
-- シリーズ名なら最新作から最大6機種を新しい順（導入年が新しい順）で返す
-- 部分一致でも返す
-- e〇〇 / P〇〇 / PA〇〇 / CR〇〇 プレフィックスを正確に付ける
-- ボーダーは1000円あたりの回転数（小数点1桁）
-- 2024〜2025年の新台を特に優先する
-
-必ずこのJSONのみを返す（説明・コードブロック不要）:
-[{"name":"機種名","border":数値,"year":導入年},...] 
-year は分からなければ0でよい`,
-          messages: [{ role: 'user', content: `「${q}」のパチンコのボーダーを最新順で教えてください。` }]
-        })
-      }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 20000))
-    ]);
-
-    if (!res.ok) throw new Error(`API ${res.status}`);
-    const data = await res.json();
-    const items = parseItems(data, 'AI（学習データ）');
-
-    if (items.length) {
-      // 年で降順ソート（year=0 は後ろ）
-      items.sort((a, b) => (b.year||0) - (a.year||0));
-      cache[k] = items;
-      showDD(items);
-      machineInput.className = 'machine-input found';
-      setHint('found', `✓ ${items.length} 件見つかりました　🌐最新ボタンで最新機種も確認できます`);
-      refreshCache();
-    } else {
-      machineInput.className = 'machine-input error';
-      setHint('none', `⚠ 見つかりませんでした。🌐最新ボタンでWEB検索を試してください。`);
-      hideDD();
+  // APIキーあればGemini検索
+  if (getApiKey()) {
+    setDisabled(true);
+    machineInput.className = 'machine-input searching';
+    setHint('loading', `<span class="sp">↻</span> AI検索中...`);
+    try {
+      const aiHits = await callGemini(q);
+      if (aiHits && aiHits.length) {
+        // DBとAIをマージ、AI優先・重複排除・年順ソート
+        const merged = [...aiHits];
+        for (const d of dbHits) {
+          if (!merged.find(m => nrm(m.name) === nrm(d.name))) merged.push(d);
+        }
+        merged.sort((a,b) => (b.year||0) - (a.year||0));
+        cache[k] = merged;
+        showDD(merged);
+        machineInput.className = 'machine-input found';
+        setHint('found', `✓ AI+DB: ${merged.length} 件（最新順）`);
+        refreshCache();
+        setDisabled(false);
+        return;
+      }
+    } catch(err) {
+      // AI失敗時はDBにフォールバック
     }
-  } catch(err) {
-    machineInput.className = 'machine-input error';
-    setHint('err', err.message === 'TIMEOUT'
-      ? '❌ タイムアウト。もう一度試してください。'
-      : `❌ エラー: ${err.message}`);
+    setDisabled(false);
   }
-  setDisabled(false);
+
+  // DBのみ
+  if (dbHits.length) {
+    cache[k] = dbHits;
+    showDD(dbHits);
+    machineInput.className = 'machine-input found';
+    setHint('found', `✓ DB: ${dbHits.length} 件（AIキー設定でさらに検索精度UP）`);
+    refreshCache();
+  } else {
+    machineInput.className = 'machine-input error';
+    setHint('none', `⚠ 「${q}」はDBにありません。🌐最新ボタンかAIキーを設定して検索してください。`);
+    hideDD();
+  }
 }
 
 async function doWebSearch() {
   const q = machineInput.value.trim(); if (!q) return;
+  if (!getApiKey()) { openSettings(); return; }
   const k = nrm(q) + '_web';
-
-  if (cache[k]) { showDD(cache[k]); setHint('found', `✓ WEBキャッシュから ${cache[k].length} 件表示中`); return; }
+  if (cache[k]) { showDD(cache[k]); setHint('found',`✓ キャッシュ: ${cache[k].length} 件`); return; }
 
   setDisabled(true);
   machineInput.className = 'machine-input searching';
-  setHint('loading', `<span class="sp">↻</span> WEBで最新機種を検索中（10〜20秒）...`);
+  setHint('loading', `<span class="sp">↻</span> AI最新検索中（数秒）...`);
   hideDD();
-
   try {
-    const res = await Promise.race([
-      fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 800,
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          system: `あなたはパチンコのボーダーライン専門家です。
-web_searchを使って最新機種のボーダーを調べてください。
-
-重要:
-- 必ず最新・現行稼働機種を新しい導入順で返す
-- 3.57円換金率（28個交換）のボーダーを使う
-- DMMぱちタウン / パチンコ必勝ガイド / 遊タイムナビ を検索する
-- e〇〇 / P〇〇 / PA〇〇 プレフィックスを正確に含める
-
-最終回答は必ずこのJSONのみ（説明不要）:
-[{"name":"機種名","border":数値,"year":導入年},...]`,
-          messages: [{ role: 'user', content: `「${q}」の最新パチンコ機種のボーダー（3.57円換金率）を新しい導入順で調べてください。` }]
-        })
-      }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 45000))
-    ]);
-
-    if (!res.ok) throw new Error(`API ${res.status}`);
-    const data = await res.json();
-    const items = parseItems(data, 'WEB取得（最新）');
-
-    if (items.length) {
-      items.sort((a, b) => (b.year||0) - (a.year||0));
+    const items = await callGemini(q + ' 最新 現行機種 2024 2025');
+    if (items && items.length) {
+      items.sort((a,b) => (b.year||0) - (a.year||0));
       cache[k] = items;
-      // 通常キャッシュも上書き（最新データで）
       cache[nrm(q)] = items;
       showDD(items);
       machineInput.className = 'machine-input found';
-      setHint('found', `🌐 WEB検索完了 — ${items.length} 件（最新順）`);
+      setHint('found', `✓ AI: ${items.length} 件（最新順）`);
       refreshCache();
     } else {
       machineInput.className = 'machine-input error';
-      setHint('none', `⚠ WEBでも「${q}」の情報が見つかりませんでした。`);
+      setHint('none', `⚠ 「${q}」の情報が見つかりませんでした。`);
       hideDD();
     }
   } catch(err) {
     machineInput.className = 'machine-input error';
-    setHint('err', err.message === 'TIMEOUT'
-      ? '❌ タイムアウト。もう一度試してください。'
-      : `❌ WEB検索エラー: ${err.message}`);
+    setHint('err', err.message === 'TIMEOUT' ? '❌ タイムアウト' : `❌ ${err.message}`);
   }
   setDisabled(false);
-}
-
-// APIレスポンスからitemsをパース
-function parseItems(data, src) {
-  const allText = (data.content || [])
-    .filter(b => b.type === 'text')
-    .map(b => b.text)
-    .join('');
-  const m = allText.match(/\[[\s\S]*?\]/);
-  let machines = [];
-  if (m) { try { machines = JSON.parse(m[0]); } catch(_) {} }
-  return machines
-    .filter(m => m && m.name && parseFloat(m.border) > 0)
-    .map(m => ({ name: m.name, border: parseFloat(m.border), year: parseInt(m.year)||0, src }));
-}
-
-function setDisabled(v) {
-  document.getElementById('searchBtn').disabled = v;
-  document.getElementById('webBtn').disabled = v;
 }
 
 function showDD(items) {
   dropdown.innerHTML = items.map((m,i) => {
     const on = isFav(m.name);
+    const badge = m.src === 'データベース' ? '<span style="font-size:.55rem;color:var(--muted);margin-left:.3rem;">DB</span>' : '<span style="font-size:.55rem;color:var(--cyan);margin-left:.3rem;">AI</span>';
     return `<div class="drop-item">
       <div class="drop-sel" onclick="pickDrop(${i})">
-        <span class="drop-name">${m.name}</span>
+        <span class="drop-name">${m.name}${badge}</span>
         <span class="drop-border">${m.border.toFixed(1)}<span> 回/千円</span></span>
       </div>
-      <button class="drop-fav ${on?'on':''}" onclick="toggleFavDrop(${i},this)" title="${on?'お気に入り解除':'お気に入り追加'}">${on?'★':'☆'}</button>
+      <button class="drop-fav ${on?'on':''}" onclick="toggleFavDrop(${i},this)">${on?'★':'☆'}</button>
     </div>`;
   }).join('');
   dropdown._items = items;
   dropdown.style.display = 'block';
 }
-
 function toggleFavDrop(i, btn) {
   const m = dropdown._items[i]; if(!m) return;
   if (isFav(m.name)) {
     const idx = favorites.findIndex(f=>f.name===m.name);
     if(idx!==-1) favorites.splice(idx,1);
-    btn.textContent='☆'; btn.classList.remove('on'); btn.title='お気に入り追加';
+    btn.textContent='☆'; btn.classList.remove('on');
   } else {
-    addFav(m);
-    btn.textContent='★'; btn.classList.add('on'); btn.title='お気に入り解除';
+    addFav(m); btn.textContent='★'; btn.classList.add('on');
   }
   saveFavs(); renderFavs();
   if(selected && selected.name===m.name) updateSelFavBtn(selected.name);
 }
-
 function pickDrop(i) {
   const items = dropdown._items; if(!items||!items[i]) return;
   const m = items[i];
-  selected = m;
-  machineInput.value = m.name;
-  hideDD();
-  showSel(m);
-  setHint('found', `✓ 「${m.name}」ボーダー ${m.border.toFixed(1)} 回を設定しました`);
+  selected = m; machineInput.value = m.name;
+  hideDD(); showSel(m);
+  setHint('found', `✓ 「${m.name}」ボーダー ${m.border.toFixed(1)} 回`);
   machineInput.className = 'machine-input found';
 }
-
 function hideDD() { dropdown.style.display='none'; }
-
 function showSel(m) {
   document.getElementById('selName').textContent = m.name;
   document.getElementById('selBorder').textContent = m.border.toFixed(1);
@@ -882,27 +1127,28 @@ function showSel(m) {
   updateSelFavBtn(m.name);
 }
 function hideSel() { document.getElementById('selBox').classList.remove('show'); }
-
 function setHint(type, html) {
   searchHint.innerHTML = `<span class="hint-${type}">${html}</span>`;
 }
-
 function refreshCache() {
-  const keys = Object.keys(cache);
+  const keys = Object.keys(cache).filter(k=>!k.endsWith('_web'));
   const sec = document.getElementById('cacheSection');
   if (!keys.length) { sec.style.display='none'; return; }
   sec.style.display='block';
-  document.getElementById('cachePills').innerHTML = keys.map(k=>
-    `<span class="cache-pill" onclick="loadCache('${k}')">${cache[k][0].name.slice(0,10)}… (${cache[k].length}件)</span>`
+  cachePillsEl.innerHTML = keys.slice(-5).map(k=>
+    `<span class="cache-pill" onclick="loadCacheItem('${k}')">${(cache[k][0]?.name||k).slice(0,10)}… (${cache[k].length}件)</span>`
   ).join('');
 }
-
-function loadCache(key) {
+function loadCacheItem(key) {
   if(!cache[key]) return;
   machineInput.value = cache[key][0].name;
   showDD(cache[key]);
-  setHint('found',`✓ キャッシュから ${cache[key].length} 件表示中`);
+  setHint('found',`✓ ${cache[key].length} 件`);
   machineInput.className = 'machine-input found';
+}
+function setDisabled(v) {
+  document.getElementById('searchBtn').disabled = v;
+  document.getElementById('webBtn').disabled = v;
 }
 
 // ═══════════════════════════════
@@ -913,59 +1159,49 @@ function calculate() {
   const investYen = getYen();
   const curRot    = parseFloat(document.getElementById('currentRot').value);
   const rawInvest = parseFloat(document.getElementById('investment').value);
-
   if (!investYen) { alert('投資金額を入力してください'); return; }
   if (isNaN(curRot)) { alert('現在の回転数を入力してください'); return; }
   const net = curRot - startRot;
   if (net < 0) { alert('現在の回転数がスタート時より小さいです'); return; }
-
   const rate = (net / investYen) * 1000;
-
   document.getElementById('rRate').textContent   = rate.toFixed(1);
   document.getElementById('rNet').textContent    = net.toLocaleString();
   document.getElementById('rRate1k').textContent = rate.toFixed(2) + ' 回';
-
   const investDisp = investUnit === 'ball'
     ? `${rawInvest.toLocaleString()} 玉 (${Math.round(investYen).toLocaleString()} 円)`
     : `${Math.round(investYen).toLocaleString()} 円`;
   document.getElementById('rInvest').textContent = investDisp;
-
   const result = document.getElementById('result');
   const rtop   = document.getElementById('resultTop');
   const diffA  = document.getElementById('diffArea');
   const noNote = document.getElementById('noNote');
   const srcRow = document.getElementById('rSrcRow');
-
   if (selected && selected.border) {
     document.getElementById('rBorder').textContent = selected.border.toFixed(1);
     const diff = rate - selected.border;
     const sign = diff >= 0 ? '+' : '';
     const dEl  = document.getElementById('rDiff');
     dEl.textContent = `${sign}${diff.toFixed(1)}`;
-
     let cls, icon, title, sub;
-    if      (diff >  3) { cls='pos'; icon='🎯'; title=`ボーダー大幅超え！ ${sign}${diff.toFixed(1)} 回`; sub='回転率が優秀です。このまま続行が期待値プラスです。'; }
+    if      (diff >  3)   { cls='pos'; icon='🎯'; title=`ボーダー大幅超え！ ${sign}${diff.toFixed(1)} 回`; sub='回転率が優秀です。このまま続行が期待値プラスです。'; }
     else if (diff >  0.5) { cls='pos'; icon='✅'; title=`ボーダー超え  ${sign}${diff.toFixed(1)} 回`; sub='ボーダーを上回っています。続行推奨です。'; }
-    else if (diff >= -0.5) { cls='even'; icon='⚖️'; title=`ほぼボーダー（${sign}${diff.toFixed(1)} 回）`; sub='損益分岐点に近い状態です。様子を見ながら判断を。'; }
-    else if (diff >  -3) { cls='neg'; icon='⚠️'; title=`ボーダー割れ  ${diff.toFixed(1)} 回`; sub='回転率が不足しています。台移動を検討してください。'; }
+    else if (diff >= -0.5){ cls='even';icon='⚖️'; title=`ほぼボーダー（${sign}${diff.toFixed(1)} 回）`; sub='損益分岐点に近い状態です。様子を見ながら判断を。'; }
+    else if (diff >  -3)  { cls='neg'; icon='⚠️'; title=`ボーダー割れ  ${diff.toFixed(1)} 回`; sub='回転率が不足しています。台移動を検討してください。'; }
     else                  { cls='neg'; icon='🚨'; title=`大幅ボーダー割れ  ${diff.toFixed(1)} 回`; sub='かなり不利な状態です。撤退を強く推奨します。'; }
-
     rtop.className=`result-top ${cls}`;
     dEl.className=`num-big ${cls}`;
     document.getElementById('vIcon').textContent=icon;
     document.getElementById('vTitle').className=`verdict-title ${cls}`;
     document.getElementById('vTitle').textContent=title;
     document.getElementById('vSub').textContent=sub;
-
     diffA.style.display='block';
     const pct=Math.min(Math.abs(diff)/selected.border*100,48);
     const fill=document.getElementById('diffFill');
     document.getElementById('diffLbl').textContent=`${sign}${diff.toFixed(1)} 回`;
     if(diff>=0){ fill.style.cssText=`left:50%;right:auto;width:${pct}%;background:linear-gradient(90deg,#2ef08a,#1ab060)`; }
     else       { fill.style.cssText=`right:50%;left:auto;width:${pct}%;background:linear-gradient(270deg,#ff3b5c,#cc2040)`; }
-
     srcRow.style.display='flex';
-    document.getElementById('rSrc').textContent=selected.src||'AI取得';
+    document.getElementById('rSrc').textContent=selected.src||'DB';
     noNote.style.display='none';
   } else {
     document.getElementById('rBorder').textContent='—';
@@ -977,13 +1213,61 @@ function calculate() {
     document.getElementById('vSub').textContent='機種未選択のためボーダーとの比較ができません。先に機種を検索・選択してください。';
     diffA.style.display='none'; srcRow.style.display='none'; noNote.style.display='block';
   }
-
   result.className='result show';
   result.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ── init ──
 loadFavs();
+
 </script>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+    <div class="modal-box">
+      <div class="modal-title">⚙ APIキー設定</div>
+      <div class="modal-desc">
+        AI検索を使うには <a href="https://console.anthropic.com/settings/keys" target="_blank">Anthropic Console</a>
+        でAPIキーを取得して入力してください。<br>
+        無料クレジットあり。検索1回あたり約0.001〜0.01円。<br><br>
+        ⚠ キーはこのブラウザのみに保存されます（サーバーには送信されません）。
+      </div>
+      <input class="modal-input" id="apiKeyInput" type="password"
+        placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')saveSettings()">
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="closeSettings()">キャンセル</button>
+        <button class="modal-btn-save" onclick="saveSettings()">保存して閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating settings button -->
+  <button class="settings-btn" onclick="openSettings()" title="APIキー設定">⚙</button>
+
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+    <div class="modal-box">
+      <div class="modal-title">⚙ Gemini APIキー設定</div>
+      <div class="modal-desc">
+        AI検索（完全無料）を使うには
+        <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>
+        でAPIキーを取得して入力してください。<br><br>
+        ✅ <strong>完全無料</strong>（クレカ不要・無料枠1日1500回）<br>
+        ✅ キーはブラウザのみに保存（外部サーバー送信なし）<br>
+        ✅ DBにない最新機種もAIで検索できます
+      </div>
+      <input class="modal-input" id="apiKeyInput" type="password"
+        placeholder="AIza..." autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')saveSettings()">
+      <div class="modal-btns">
+        <button class="mbtn-cancel" onclick="closeSettings()">キャンセル</button>
+        <button class="mbtn-save" onclick="saveSettings()">保存</button>
+      </div>
+    </div>
+  </div>
+  <button class="settings-fab" onclick="openSettings()" title="Gemini APIキー設定">⚙</button>
+
 </body>
 </html>
