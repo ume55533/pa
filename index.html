@@ -831,7 +831,7 @@ function searchStaticDB(q) {
 async function callGemini(q) {
   const key = getApiKey();
   if (!key) return null;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
   const prompt = `あなたはパチンコのボーダーライン専門家です。
 「${q}」について3.57円換金率（28個交換）のボーダーラインを答えてください。
 シリーズ名なら最新作から最大6機種を導入が新しい順で返してください。
@@ -848,7 +848,18 @@ e〇〇/P〇〇/PA〇〇プレフィックスを正確に付けること。
     }),
     new Promise((_, r) => setTimeout(() => r(new Error('TIMEOUT')), 20000))
   ]);
-  if (!res.ok) throw new Error(`Gemini API ${res.status}`);
+  if (!res.ok) {
+    let errMsg = `Gemini API エラー ${res.status}`;
+    try {
+      const errData = await res.json();
+      const code = errData?.error?.status || '';
+      if (res.status === 400) errMsg = 'APIキーが無効です。正しいキーか確認してください。';
+      else if (res.status === 403) errMsg = 'APIキーの権限エラー。Google AI StudioでAPIが有効か確認してください。';
+      else if (res.status === 404) errMsg = 'モデルが見つかりません。APIキーが有効か確認してください。';
+      else if (res.status === 429) errMsg = '無料枠の制限に達しました。しばらく待ってから再試行してください。';
+    } catch(_) {}
+    throw new Error(errMsg);
+  }
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   const m = text.match(/\[[\s\S]*?\]/);
